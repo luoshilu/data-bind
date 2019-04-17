@@ -5,33 +5,33 @@ import Watcher from './observer/watcher'
 import ele from './ele'
 import _ from 'lodash'
 
-let vm = new VM ({
+const vm = new VM({
   data: {
     title: 'create VM',
     num: 2,
     info: {
       type: 'letter',
-      action: 'chunk'
+      action: 'chunk',
     },
-    chunkArg: ['a','b',{deep: true}, ['c','d']]
+    chunkArg: ['a', 'b', { deep: true }, ['c', 'd']],
   },
-  props: {}
+  props: {},
 })
 
-let readerWatcher = new Watcher(vm, function(){
+const readerWatcher = new Watcher(vm, () => {
   document.body.innerHTML = ''
   reader()
 })
 
-let hook = {
-  'createBefore': function(){
+const hook = {
+  'createBefore': () => {
     pushTarget(readerWatcher)
   },
-  'created': function(){
+  'created': () => {
     reader()
     popTarget()
   },
-  'mounted': function(){}
+  'mounted': () => { },
 }
 // --------------
 
@@ -41,27 +41,27 @@ function reader() {
   ele(document.body, [
     ele('h2', `${vm.title}`),
     ele('div', [
-      ele('p', `ARRAY: ${vm.chunkArg.toString()}`), 
+      ele('p', `ARRAY: ${vm.chunkArg.toString()}`),
       ele('p', `CHUNK ${vm.num} AND JSON Stringify: ${JSON.stringify(_.chunk(vm.chunkArg, vm.num))}`),
       ele('div', [
         ele('h3', `INFO`),
         ele('p', `> type: ${vm.info.type}`),
-        ele('p', `> action: ${vm.info.action}`)
-      ])
-    ])
+        ele('p', `> action: ${vm.info.action}`),
+      ]),
+    ]),
   ])
 }
 hook.created()
 
-setTimeout(function(){
-  vm.info.type = "settimeout type"
+setTimeout(() => {
+  vm.info.type = 'settimeout type'
 }, 1000)
 
-setTimeout(function(){
+setTimeout(() => {
   vm.chunkArg[2].deep = false
 }, 2000)
 
-setTimeout(function(){
+setTimeout(() => {
   vm.num = 1
   // vm.chunkArg[3].push({'obj': 123})
 }, 3000)

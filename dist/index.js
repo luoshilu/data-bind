@@ -12,7 +12,7 @@ var VM = /** @class */ (function () {
     return VM;
 }());
 
-/*添加代理*/
+/* 添加代理*/
 function proxy(target, sourceKey, key) {
     var that = target;
     Object.defineProperty(target, key, {
@@ -99,27 +99,23 @@ function defineReactive(obj, key, val) {
             return value;
         },
         set: function (newVal) {
-            console.log(newVal);
-            /*通过getter方法获取当前值，与新值进行比较，一致则不需要执行下面的操作*/
+            // 通过getter方法获取当前值，与新值进行比较，一致则不需要执行下面的操作
             var value = getter ? getter.call(obj) : val;
             /* eslint-disable no-self-compare */
             if (newVal === value || (newVal !== newVal && value !== value)) {
                 return;
             }
-            /* eslint-enable no-self-compare */
-            // if (process.env.NODE_ENV !== 'production' && customSetter) {
-            //   customSetter()
-            // }
             if (setter) {
-                /*如果原本对象拥有setter方法则执行setter*/
+                // 如果原本对象拥有setter方法则执行setter
                 setter.call(obj, newVal);
             }
             else {
+                /* eslint-disable no-param-reassign */
                 val = newVal;
             }
-            /*新的值需要重新进行observe，保证数据响应式*/
+            //  新的值需要重新进行observe，保证数据响应式
             childOb = observe(newVal);
-            /*dep对象通知所有的观察者*/
+            // dep对象通知所有的观察者
             dep.notify();
         }
     });
@@ -147,9 +143,9 @@ function def(obj, key, val, enumerable) {
  * not type checking this file because flow doesn't play well with
  * dynamically accessing methods on Array prototype
  */
-/*取得原生数组的原型*/
+/* 取得原生数组的原型 */
 var arrayProto = Array.prototype;
-/*创建一个新的数组对象，修改该对象上的数组的七个方法，防止污染原生数组方法*/
+/* 创建一个新的数组对象，修改该对象上的数组的七个方法，防止污染原生数组方法 */
 var arrayMethods = Object.create(arrayProto);
 var arrayKeys = [
     'push',
@@ -158,17 +154,18 @@ var arrayKeys = [
     'unshift',
     'splice',
     'sort',
-    'reverse'
+    'reverse',
 ];
 /**
- * Intercept mutating methods and emit events
- */
-/*这里重写了数组的这些方法，在保证不污染原生数组原型的情况下重写数组的这些方法，截获数组的成员发生的变化，执行原生数组操作的同时dep通知关联的所有观察者进行响应式处理*/
+* Intercept mutating methods and emit events
+*/
+/* 这里重写了数组的这些方法，在保证不污染原生数组原型的情况下重写数组的这些方法，截获数组的成员发生的变化，执行原生数组操作的同时dep通知关联的所有观察者进行响应式处理 */
 arrayKeys.forEach(function (method) {
+    var _this = this;
     // cache original method
-    /*将数组的原生方法缓存起来，后面要调用*/
+    /* 将数组的原生方法缓存起来，后面要调用 */
     var original = arrayProto[method];
-    def(arrayMethods, method, function mutator() {
+    def(arrayMethods, method, function () {
         // avoid leaking arguments:
         // http://jsperf.com/closure-with-arguments
         var i = arguments.length;
@@ -176,10 +173,10 @@ arrayKeys.forEach(function (method) {
         while (i--) {
             args[i] = arguments[i];
         }
-        /*调用原生的数组方法*/
-        var result = original.apply(this, args);
-        /*数组新插入的元素需要重新进行observe才能响应式*/
-        var ob = this.__ob__;
+        /* 调用原生的数组方法 */
+        var result = original.apply(_this, args);
+        /* 数组新插入的元素需要重新进行observe才能响应式 */
+        var ob = _this.__ob__;
         var inserted;
         switch (method) {
             case 'push':
@@ -196,13 +193,14 @@ arrayKeys.forEach(function (method) {
         if (inserted)
             ob.observeArray(inserted);
         // notify change
-        /*dep通知所有注册的观察者进行响应式处理*/
+        /* dep通知所有注册的观察者进行响应式处理 */
         ob.dep.notify();
         return result;
     });
 });
 
 function protoAugment(target, src) {
+    /* eslint-disable no-proto */
     target.__proto__ = src;
 }
 function copyAugment(target, src, keys) {
@@ -226,8 +224,8 @@ var Observer = /** @class */ (function () {
              * 2. 对数组每个成员 observe
              */
             var augment = ('__proto__' in {})
-                ? protoAugment /*直接覆盖原型的方法来修改目标对象*/
-                : copyAugment; /*定义（覆盖）目标对象或数组的某一个方法*/
+                ? protoAugment /* 直接覆盖原型的方法来修改目标对象*/
+                : copyAugment; /* 定义（覆盖）目标对象或数组的某一个方法*/
             augment(value, arrayMethods, arrayKeys);
             this.observeArray(value);
         }
@@ -17386,7 +17384,7 @@ function observe(value, asRootData) {
 function initData(vm) {
     var data = vm.$options.data;
     data = vm._data = data || {};
-    var props = vm.$options.props;
+    // let props = vm.$options.props
     // 遍历 data
     var keys = Object.keys(data);
     var i = keys.length;
@@ -17410,26 +17408,6 @@ var Watcher = /** @class */ (function () {
     Watcher.prototype.get = function () {
         pushTarget(this);
         var value;
-        var vm = this.vm;
-        try {
-            value = this.getter.call(vm, vm);
-        }
-        catch (e) {
-            // if (this.user) {
-            //   handleError(e, vm, `getter for watcher "${this.expression}"`)
-            // } else {
-            //   throw e
-            // }
-        }
-        finally {
-            // "touch" every property so they are all tracked as
-            // dependencies for deep watching
-            // if (this.deep) {
-            //   traverse(value)
-            // }
-            // popTarget()
-            // this.cleanupDeps()
-        }
         return value;
     };
     Watcher.prototype.addDep = function (dep) {
@@ -17468,7 +17446,7 @@ function ele(tag, child) {
         element.appendChild(child);
     }
     if (lodash.isArray(child)) {
-        child.map(function (e) {
+        child.forEach(function (e) {
             element.appendChild(ele(e));
         });
     }
@@ -17481,11 +17459,11 @@ var vm = new VM({
         num: 2,
         info: {
             type: 'letter',
-            action: 'chunk'
+            action: 'chunk',
         },
-        chunkArg: ['a', 'b', { deep: true }, ['c', 'd']]
+        chunkArg: ['a', 'b', { deep: true }, ['c', 'd']],
     },
-    props: {}
+    props: {},
 });
 var readerWatcher = new Watcher(vm, function () {
     document.body.innerHTML = '';
@@ -17499,7 +17477,7 @@ var hook = {
         reader();
         popTarget();
     },
-    'mounted': function () { }
+    'mounted': function () { },
 };
 // --------------
 hook.createBefore();
@@ -17513,14 +17491,14 @@ function reader() {
             ele('div', [
                 ele('h3', "INFO"),
                 ele('p', "> type: " + vm.info.type),
-                ele('p', "> action: " + vm.info.action)
-            ])
-        ])
+                ele('p', "> action: " + vm.info.action),
+            ]),
+        ]),
     ]);
 }
 hook.created();
 setTimeout(function () {
-    vm.info.type = "settimeout type";
+    vm.info.type = 'settimeout type';
 }, 1000);
 setTimeout(function () {
     vm.chunkArg[2].deep = false;

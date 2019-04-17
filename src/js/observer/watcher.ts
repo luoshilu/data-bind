@@ -1,6 +1,5 @@
-import Dep from './dep'
+import Dep, { pushTarget } from './dep'
 import VM from '../vm'
-import { pushTarget, popTarget }  from './dep'
 export default class Watcher {
   vm: VM
   deps: Array<Dep>
@@ -10,18 +9,17 @@ export default class Watcher {
   sync: boolean = false
   depIds = new Set()
   newDepIds = new Set()
-  constructor (vm: VM, cb: Function) {
+  constructor(vm: VM, cb: Function) {
     this.vm = vm
     this.cb = cb
   }
 
-  get () {
+  get() {
     pushTarget(this)
     let value
-    const vm = this.vm
     try {
       // value = this.getter.call(vm, vm)
-    }
+    } catch {}
     return value
   }
 
@@ -36,14 +34,14 @@ export default class Watcher {
     }
   }
 
-  run () {
+  run() {
     this.cb()
   }
   update() {
     // 同步执行
     // if (this.sync) {
-      this.run()
-      return
+    this.run()
+    return
     // }
     // 异步推送到观察者队列中，由调度者调用
     // setTimeout(function(){

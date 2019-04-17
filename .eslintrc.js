@@ -1,6 +1,6 @@
 module.exports = {
     extends: [
-        'eslint-config-alloy/typescript',
+        'luo',
     ],
     globals: {
         // 这里填入你的项目需要的全局变量
@@ -12,7 +12,7 @@ module.exports = {
     rules: {
         // 这里填入你的项目需要的个性化配置，比如：
         //
-        // // 一个缩进必须用两个空格替代
+        // 一个缩进必须用两个空格替代
         // 'indent': [
         //     'error',
         //     2,
@@ -20,7 +20,7 @@ module.exports = {
         //         SwitchCase: 1,
         //         flatTernaryExpressions: true
         //     }
-        // ]
+        // ],
         // // 一个缩进必须用两个空格替代
         // '@typescript-eslint/indent': [
         //     'error',

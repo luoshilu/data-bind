@@ -9,11 +9,12 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@typescript-eslint/eslint-plugin": "^1.6.0",
+    "babel-eslint": "^10.0.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "browser-sync": "^2.26.3",
     "eslint": "^5.16.0",
-    "eslint-config-alloy": "^2.0.0-alpha.2",
+    "eslint-config-luo": "^2.0.2",
     "gulp": "^4.0.0",
     "gulp-clean-css": "^4.0.0",
     "gulp-concat": "^2.6.1",
@@ -30,7 +31,8 @@
     "rollup-plugin-typescript": "^1.0.1",
     "rollup-plugin-uglify": "^6.0.2",
     "tslib": "^1.9.3",
-    "typescript": "^3.4.3"
+    "typescript": "^3.4.3",
+    "vue-eslint-parser": "^6.0.3"
   },
   "main": "./src/js/index.ts",
   "scripts": {

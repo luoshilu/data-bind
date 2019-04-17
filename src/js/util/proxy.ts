@@ -1,5 +1,5 @@
-/*添加代理*/
-export default function proxy (target: Object, sourceKey: string, key: string) {
+/* 添加代理*/
+export default function proxy(target: Object, sourceKey: string, key: string) {
   const that = target
   Object.defineProperty(target, key, {
     get: function() {
